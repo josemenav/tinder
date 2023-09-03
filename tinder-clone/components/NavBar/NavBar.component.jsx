@@ -5,18 +5,28 @@ import whiteLogo from '../../public/tinder_logo_white.png'
 import colorLogo from '../../public/color-logo-tinder.png'
 import { useSelector } from 'react-redux'
 import { Fragment } from 'react'
+import { useState } from 'react'
 
-const NavBar = ({minimal}) => {
-
+const NavBar = ({minimal, setShowModal, showModal, setIsSignUp}) => {
   const user = useSelector((state) => state.user)
 
+  const handleClick = () => {
+      setShowModal(true);  
+      setIsSignUp(false)
+  }
     return(
       <nav>
         <div className='logo-container'>
           <Image className='logo' src={minimal ? colorLogo : whiteLogo} alt='Logo' />
         </div>
-        {!user.username && !minimal &&<button className='nav-button'>Log in</button>}
+        {!user.username && !minimal &&<button 
+        className='nav-button'
+        onClick={handleClick}
+        disabled = {showModal}
+        >Log in</button>}
       </nav>
+
+      
     ); 
   }
   
