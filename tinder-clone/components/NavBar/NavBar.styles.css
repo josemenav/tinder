@@ -28,5 +28,7 @@ nav .logo-container {
 }
 
 nav .logo-container .logo {
+    height: 50px;
     width: 100%;
 }
+

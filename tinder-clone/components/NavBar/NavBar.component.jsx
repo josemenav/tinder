@@ -4,8 +4,6 @@ import './NavBar.styles.css'
 import whiteLogo from '../../public/tinder_logo_white.png'
 import colorLogo from '../../public/color-logo-tinder.png'
 import { useSelector } from 'react-redux'
-import { Fragment } from 'react'
-import { useState } from 'react'
 
 const NavBar = ({minimal, setShowModal, showModal, setIsSignUp}) => {
   const user = useSelector((state) => state.user)
@@ -25,8 +23,6 @@ const NavBar = ({minimal, setShowModal, showModal, setIsSignUp}) => {
         disabled = {showModal}
         >Log in</button>}
       </nav>
-
-      
     ); 
   }
   
