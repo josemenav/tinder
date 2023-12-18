@@ -3,23 +3,38 @@ import { Fragment } from "react";
 import NavBar from "../../components/NavBar/NavBar.component";
 import './onboarding.styles.css'
 import { useState } from 'react'
+import { useCookies } from 'react-cookie'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import axios from 'axios';
 
 const OnBoarding = () => {
+  let router =  useRouter()
+  const [cookies, setCookie, removeCookie] = useCookies(['user']);
   const [formData, setFormData] = useState({
-    user_id: "",
+    user_id: cookies.UserId,
     first_name: "", 
     dob_day: "", 
     dob_month: "", 
     dob_year: "", 
     show_gender: false, 
-    gender_identity: 'man', 
-    gender_interest: 'woman', 
+    gender_identity: '', 
+    gender_interest: '', 
     url: '', 
     about: '', 
     matches: []
   })
 
-  const handleSubmit = () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.put(`http://localhost:8000/user`,{formData})
+      const success = response.status == 200
+      if (success){
+        router.push('dashboard')
+      }
+    } catch (error) {
+      console.log(error)
+    }
     console.log("Submitted")
   }
 
@@ -184,7 +199,7 @@ const OnBoarding = () => {
                   required={true}
               />
               <div className="photo-container">
-                  <img src={formData.url} alt="Profile pic preview" />
+                {formData.url && <img src={formData.url} alt="Profile pic preview" />}
               </div>
 
 

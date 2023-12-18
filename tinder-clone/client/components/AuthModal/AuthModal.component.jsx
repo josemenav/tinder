@@ -1,24 +1,50 @@
 'use client'
 import './AuthModal.styles.css'
 import { useState } from 'react'
+import axios from 'axios'; 
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useCookies } from 'react-cookie'
 
 const AuthModal = ({setShowModal, isSignUp}) => {
     const [email, setEmail] = useState(null); 
     const [password, setPassword] = useState(null); 
     const [confirmPassword, setConfirmPassword] = useState(null); 
-    const [error, setError] = useState(null); 
+    const [error, setError] = useState(null);
+    const [cookies, setCookie, removeCookie] = useCookies(['user']);
+    let router =  useRouter()
 
     const handleClick = () => {
         setShowModal(false)
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault(); 
         try{
             if(isSignUp && (password !== confirmPassword)){
                 setError('Passwords need to match!'); 
+                return;
             }
-            console.log('make a post request to our data base')
+            
+            console.log(email, password)
+            const response = await axios.post(`http://localhost:8000/${isSignUp ? 'signup' : 'login'}`, { email, password }, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json',
+                },
+            });
+              
+
+            
+            const success = response.status == 200
+            if (success && isSignUp){
+                setCookie('AuthToken', response.data.token)
+                setCookie('UserId', response.data.user_id)
+                router.push('onboarding')
+            } else if (success && !isSignUp){
+                setCookie('AuthToken', response.data.token)
+                router.push('dashboard')
+            }
+            
         }catch(error){
             console.log(error); 
         }
